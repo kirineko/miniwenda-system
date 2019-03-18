@@ -3,6 +3,9 @@
 [![Latest Stable Version][packagist-image]][packagist-url]
 [![License][license-image]][license-url]
 
+#### 注意
+Wafer PHP SDK 已经全面升级 2.0 以支持 Wafer2，如果您想查看 Wafer1 的 PHP SDK 文档，请[点击这里](https://github.com/tencentyun/wafer-php-server-sdk/tree/v0.4.4)。
+
 ## 介绍
 
 Wafer 服务端 SDK 是腾讯云为微信小程序开发者提供的快速开发库，SDK 封装了以下功能供小程序开发者快速调用：
@@ -43,7 +46,7 @@ require_once 'path/to/qcloud/weapp-sdk/AutoLoader.php';
 ### 初始化 SDK 配置项
 
 ```php
-use \QCloud_WeApp_SDK\Conf;
+use \QCloud_WeApp_SDK\Conf as Config;
 
 Config::setup(array(
     'appId'          => '微信小程序 AppID',
@@ -197,7 +200,7 @@ $cosClient->upload('mybucket', 'test.txt', 'Hello World')->toArray();
 
 ### 详细示例
 
-参见项目：[Wafer2 服务端 DEMO - PHP](https://github.com/tencentyun/wafer2-php-server-demo)
+参见项目：[Wafer2 服务端 DEMO - PHP](https://github.com/tencentyun/wafer2-quickstart-php)
 
 ## LICENSE
 

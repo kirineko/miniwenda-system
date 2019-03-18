@@ -23,13 +23,16 @@ class Command extends OperationCommand {
     {
         return $this->client->createPresignedUrl($this->prepare(), $expires);
     }
+    public function createAuthorization($expires)
+    {
+        return $this->client->createAuthorization($this->prepare(), $expires);
+    }
 
     protected function process() {
         parent::process();
-
         // Set the GetObject URL if using the PutObject operation
         if ($this->result instanceof Model && $this->getName() == 'PutObject') {
-            $request = $this->getRequest();
+            $request = $this->getRequest();;
             $this->result->set('ObjectURL', $request->getUrl());
         }
     }

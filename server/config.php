@@ -7,13 +7,18 @@ $config = [
     'rootPath' => '',
 
     // 微信小程序 AppID
-    'appId' => '',
+    'appId' => 'wx1867cc390c6b0d78',
 
     // 微信小程序 AppSecret
-    'appSecret' => '',
+    'appSecret' => 'bd7300222826c357654331c714007822',
 
     // 使用腾讯云代理登录
     'useQcloudLogin' => true,
+    'qcloudAppId' => 1258234062,
+    'qcloudSecretId' => 'AKIDQhmknZ93rGtLW7yomZCezjcLxYyDp4iB',
+    'qcloudSecretKey' => 'SmneMlBu5Ooqz2dCdbi3IVpxc8kG1Ndq',
+    'wxMessageToken' => 'weixinmsgtoken',
+    'networkTimeout' => 30000,
 
     /**
      * MySQL 配置，用来存储 session 和用户信息
@@ -25,7 +30,8 @@ $config = [
         'port' => 3306,
         'user' => 'root',
         'db'   => 'cAuth',
-        'pass' => 'wx00dd65d70f19dcec',
+        // 'pass' => 'wx1867cc390c6b0d78',
+        'pass' => 'root',
         'char' => 'utf8mb4'
     ],
 

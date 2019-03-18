@@ -1,285 +1,270 @@
-## 开发准备
+# COS-PHP-SDK-V5
+腾讯云COS-PHP-SDK-V5（[XML API](https://cloud.tencent.com/document/product/436/7751)）
 
-### 获取bucket列表 listbuckets
-#### 方法原型
-```php
-public Guzzle\Service\Resource\Model listBucket(array $args = array())
+[![Latest Stable Version](https://poser.pugx.org/qcloud/cos-sdk-v5/v/stable)](https://packagist.org/packages/qcloud/cos-sdk-v5)
+[![Total Downloads](https://img.shields.io/packagist/dt/qcloud/cos-sdk-v5.svg?style=flat)](https://packagist.org/packages/qcloud/cos-sdk-v5)
+[![Build Status](https://travis-ci.org/tencentyun/cos-php-sdk-v5.svg?branch=master)](https://travis-ci.org/tencentyun/cos-php-sdk-v5)
+
+## 环境准备
+*   PHP 5.3+
+    您可以通过`php -v`命令查看当前的 PHP 版本。
+*   cURL 扩展
+    您可以通过`php -m`命令查看 cURL 扩展是否已经安装好。
+
+>- Ubuntu 系统中，您可以使用 apt-get 包管理器安装 PHP 的 cURL 扩展，安装命令如下。
 ```
-#### 成功返回值
-
-|      返回值类型               |        返回值描述        |
-| :-------------:               | :-----------------: |
-| Guzzle\Service\Resource\Model | bucket列表的信息  |
-
-#### 示例
-
-```php
-//获取bucket列表
-$result = $cosClient->listBuckets();
+sudo apt-get install php-curl
 ```
-
-
-### 简单文件上传 putobject
-
-#### 方法原型
-
-```php
-public Guzzle\Service\Resource\Model putObject(array $args = array())
+>- CentOS 系统中，您可以使用 yum 包管理器安装 PHP 的 cURL 扩展。
+```
+sudo yum install php-curl
 ```
 
-#### 参数说明
+## SDK 安装
+SDK 安装有三种方式：
+* Composer 方式
+* Phar 方式
+* 源码方式
 
-$args是包含以下字段的关联数组：
+### Composer 方式
+推荐使用 Composer 安装 cos-php-sdk-v5，Composer 是 PHP 的依赖管理工具，允许您声明项目所需的依赖，然后自动将它们安装到您的项目中。
+> 您可以在 [Composer 官网](https://getcomposer.org/) 上找到更多关于如何安装 Composer，配置自动加载以及用于定义依赖项的其他最佳实践等相关信息。
 
-| 字段名   |       类型                | 默认值 | 是否必填字段 |                  描述                  |
-| :------: | :------------:            | :--:   | :--------:   | :----------------------------------: |
-| Bucket   |     string                |  无    | 是           |               bucket名称               |
-|    Key   |     string                |  无    | 是           |         对象名称         |
-|    Body  |      string\|resource     |  无    | 是           |                 对象的内容                 |
-|    ACL   |      string               |  无    | 否           |                 ACL权限控制                 |
-| Metadata | associative-array<string> |  无    | 否           | 用户的自定义头(x-cos-meta-)和HTTP头(metadata) |
-
-#### 成功返回值
-
-|      返回值类型               |        返回值描述        |
-| :-------------:               | :-----------------: |
-| Guzzle\Service\Resource\Model | 文件上传成功后属性信息, 如ETag, |
-
-#### 示例
-
-```php
-// 从内存中上传
-$cosClient->putObject(array(
-    'Bucket' => 'testbucket',
-    'Key' => 'hello.txt',
-    'Body' => 'Hello World!'));
-
-// 上传本地文件
-$cosClient->putObject(array(
-    'Bucket' => 'testbucket',
-    'Key' => 'hello.txt',
-    'Body' => fopen('./hello.txt', 'rb')));
+#### 安装步骤： 
+1. 打开终端。
+2. 下载 Composer，执行以下命令。
+```
+curl -sS https://getcomposer.org/installer | php
+```
+3. 创建一个名为`composer.json`的文件，内容如下。
+```
+{
+    "require": {
+        "qcloud/cos-sdk-v5": "1.*"
+    }
+}
+```
+4. 使用 Composer 安装，执行以下命令。
+```
+php composer.phar install
+```
+使用该命令后会在当前目录中创建一个 vendor 文件夹，里面包含 SDK 的依赖库和一个 autoload.php 脚本，方便在项目中调用。
+5. 通过 autoloader 脚本调用 cos-php-sdk-v5。
+```
+require '/path/to/sdk/vendor/autoload.php';
 ```
 
+现在您的项目已经可以使用 COS 的 V5 版本 SDK 了。
 
-
-### 分块文件上传 multiupload
-
-分块文件上传是通过将文件拆分成多个小块进行上传，多个小块可以并发上传, 最大支持40TB。
-
-分块文件上传的步骤为:
-
-1. 初始化分块上传，获取uploadid。(createMultipartUpload)
-2. 分块数据上传(可并发).  (uploadPart)
-3. 完成分块上传。 (completeMultipartUpload)
-
-另外还包含获取已上传分块(listParts), 终止分块上传(abortMultipartUpload)。
-
-#### 方法原型
-
-```php
-// 初始化分块上传
-public Guzzle\Service\Resource\Model createMultipartUpload(array $args = array());
-
-// 上传数据分块
-public Guzzle\Service\Resource\Model uploadPart(array $args = array());
-            
-// 完成分块上传
-public Guzzle\Service\Resource\Model completeMultipartUpload(array $args = array());
-
-// 罗列已上传分块
-public Guzzle\Service\Resource\Model listParts(array $args = array());
-
-// 终止分块上传
-public Guzzle\Service\Resource\Model abortMultipartUpload(array $args = array());
+### Phar 方式
+Phar 方式安装 SDK 的步骤如下：
+1. 在 [GitHub 发布页面](https://github.com/tencentyun/cos-php-sdk-v5/releases) 下载相应的 phar 文件。
+2.  在代码中引入 phar 文件：
 ```
-### 上传文件 upload
-#### 示例
-```php
-//上传文件
-$result = $cosClient->upload(
-                 $bucket = 'testbucket',
-                 $key = '111.txt',
-                 $body = '131213');
-```
-单文件小于5M时，使用单文件上传
-反之使用分片上传
-
-### 下载文件 getobject
-
-将文件下载到本地或者下载到内存中.
-
-#### 方法原型
-
-```php
-// 下载文件
-public Guzzle\Service\Resource\Model getObject(array $args = array());
+require  '/path/to/cos-sdk-v5.phar';
 ```
 
-#### 参数说明
-
-$args是包含以下字段的关联数组：
-
-| 字段名   |       类型     | 默认值 | 是否必填字段 |                  描述                  |
-| :------: |    :------------: | :--:   | :--------:   | :----------------------------------: |
-| Bucket   |     string     |  无    | 是           |               bucket名称               |
-| Key      |     string     |  无    | 是           |         对象名称         |
-| SaveAs   |     string     |  无    | 否           | 保存到本地的本地文件路径                 |
-
-#### 成功返回值
-
-|      返回值类型               |        返回值描述        |
-| :-------------:               | :-----------------: |
-| Guzzle\Service\Resource\Model | 对象下载成功后返回的属性信息，比如ETag、ContentLength等 |
-
-#### 示例
-
-```php
-// 下载文件到内存
-$result = $cosClient->getObject(array(
-    'Bucket' => 'testbucket',
-    'Key' => 'hello.txt'));
-
-// 下载文件到本地
-$result = $cosClient->getObject(array(
-    'Bucket' => 'testbucket',
-    'Key' => 'hello.txt',
-    'SaveAs' => './hello.txt'));
+### 源码方式
+源码方式安装 SDK 的步骤如下：
+1.  在 [GitHub 发布页面](https://github.com/tencentyun/cos-php-sdk-v5/releases) 下载相应的 zip 文件。
+2.  解压通过 autoload.php 脚本加载 SDK：
+```
+require '/path/to/sdk/vendor/autoload.php';
 ```
 
+## 快速入门 
+可参照 Demo 程序，详见 [sample.php](https://github.com/tencentyun/cos-php-sdk-v5/blob/master/sample.php)。
 
-### 删除文件 deleteobject
+## 接口文档
+php sdk 接口文档，详见https://cloud.tencent.com/document/product/436/12267
 
-删除COS上的对象.
-
-#### 方法原型
-
+### 配置文件
 ```php
-// 删除文件
-public Guzzle\Service\Resource\Model deleteObject(array $args = array());
+$cosClient = new Qcloud\Cos\Client(array('region' => '<Region>',
+    'credentials'=> array(
+        'secretId'    => '<SecretId>',
+        'secretKey' => '<SecretKey>')));
 ```
 
-#### 参数说明
+若您使用 [临时密钥](https://cloud.tencent.com/document/product/436/14048) 初始化，请用下面方式创建实例。
 
-$args是包含以下字段的关联数组：
-
-| 字段名   |       类型     | 默认值 | 是否必填字段 |                  描述                  |
-| :------: | :------------: | :--:   | :--------:   | :----------------------------------: |
-| Bucket   |     string     |  无    | 是           |               bucket名称               |
-| Key      |     string     |  无    | 是           |         对象名称         |
-
-#### 成功返回值
-
-|      返回值类型               |        返回值描述        |
-| :-------------:               | :-----------------: |
-| Guzzle\Service\Resource\Model | 包含RequestId等信息 |
-
-#### 示例
-
-```php
-// 删除COS对象
-$result = $cosClient->deleteObject(array(
-    'Bucket' => 'testbucket',
-    'Key' => 'hello.txt'));
+```
+$cosClient = new Qcloud\Cos\Client(array('region' => '<Region>',
+    'credentials'=> array(
+        'secretId'    => '<SecretId>',
+        'secretKey' => '<SecretKey>',
+        'token' => '<XCosSecurityToken>')));
 ```
 
-
-
-### 获取对象属性 headobject
-
-查询获取COS上的对象属性
-
-#### 方法原型
-
+### 上传文件
+* 使用putObject接口上传文件(最大5G)
+* 使用Upload接口分块上传文件
 ```php
-// 获取文件属性
-public Guzzle\Service\Resource\Model headObject(array $args = array());
+# 上传文件
+## putObject(上传接口，最大支持上传5G文件)
+### 上传内存中的字符串
+//bucket 的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
+try {
+    $result = $cosClient->putObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key,
+        'Body' => 'Hello World!'));
+    print_r($result);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 上传文件流
+try {
+    $result = $cosClient->putObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key,
+        'Body' => fopen($local_path, 'rb')));
+    print_r($result);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 设置header和meta
+try {
+    $result = $cosClient->putObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key,
+        'Body' => fopen($local_path, 'rb'),
+        'ACL' => 'string',
+        'CacheControl' => 'string',
+        'ContentDisposition' => 'string',
+        'ContentEncoding' => 'string',
+        'ContentLanguage' => 'string',
+        'ContentLength' => integer,
+        'ContentType' => 'string',
+        'Expires' => 'mixed type: string (date format)|int (unix timestamp)|\DateTime',
+        'GrantFullControl' => 'string',
+        'GrantRead' => 'string',
+        'GrantWrite' => 'string',
+        'Metadata' => array(
+            'string' => 'string',
+        ),
+        'StorageClass' => 'string'));
+    print_r($result);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+## Upload(高级上传接口，默认使用分块上传最大支持50T)
+### 上传内存中的字符串
+try {
+    $result = $cosClient->Upload(
+        $bucket = $bucket,
+        $key = $key,
+        $body = 'Hello World!');
+    print_r($result);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 上传文件流
+try {
+    $result = $cosClient->Upload(
+        $bucket = $bucket,
+        $key = $key,
+        $body = fopen($local_path, 'rb'));
+    print_r($result);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 设置header和meta
+try {
+    $result = $cosClient->Upload(
+        $bucket= $bucket,
+        $key = $key,
+        $body = fopen($local_path, 'rb'),
+        $options = array(
+            'ACL' => 'string',
+            'CacheControl' => 'string',
+            'ContentDisposition' => 'string',
+            'ContentEncoding' => 'string',
+            'ContentLanguage' => 'string',
+            'ContentLength' => integer,
+            'ContentType' => 'string',
+            'Expires' => 'mixed type: string (date format)|int (unix timestamp)|\DateTime',
+            'GrantFullControl' => 'string',
+            'GrantRead' => 'string',
+            'GrantWrite' => 'string',
+            'Metadata' => array(
+                'string' => 'string',
+            ),
+            'StorageClass' => 'string'));
+    print_r($result);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
 ```
 
-#### 参数说明
-
-$args是包含以下字段的关联数组：
-
-| 字段名   |       类型     | 默认值 | 是否必填字段 |                  描述                  |
-| :------: | :------------: | :--:   | :--------:   | :----------------------------------: |
-| Bucket   |     string     |  无    | 是           |               bucket名称               |
-| Key      |     string     |  无    | 是           |         对象名称         |
-
-#### 成功返回值
-
-|      返回值类型               |        返回值描述        |
-| :-------------:               | :-----------------: |
-| Guzzle\Service\Resource\Model | 对象的相关属性信息 |
-
-#### 示例
-
-```java
-// 获取COS文件属性
-$result $cosClient->headObject(array('Bucket' => 'testbucket', 'Key' => 'hello.txt'));
-```
-
-
-### 获取文件列表 listbucket
-
-查询获取COS上的文件列表
-
-#### 方法原型
-
+### 下载文件
+* 使用getObject接口下载文件
+* 使用getObjectUrl接口获取文件下载URL
 ```php
-// 获取文件列表
-public Guzzle\Service\Resource\Model listObjects(array $args = array());
+# 下载文件
+## getObject(下载文件)
+### 下载到内存
+//bucket 的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
+try {
+    $result = $cosClient->getObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key));
+    echo($result['Body']);
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 下载到本地
+try {
+    $result = $cosClient->getObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key,
+        'SaveAs' => $local_path));
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 指定下载范围
+/*
+ * Range 字段格式为 'bytes=a-b'
+ */
+try {
+    $result = $cosClient->getObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key,
+        'Range' => 'bytes=0-10',
+        'SaveAs' => $local_path));
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+### 设置返回header
+try {
+    $result = $cosClient->getObject(array(
+        'Bucket' => $bucket,
+        'Key' => $key,
+        'ResponseCacheControl' => 'string',
+        'ResponseContentDisposition' => 'string',
+        'ResponseContentEncoding' => 'string',
+        'ResponseContentLanguage' => 'string',
+        'ResponseContentType' => 'string',
+        'ResponseExpires' => 'mixed type: string (date format)|int (unix timestamp)|\DateTime',
+        'SaveAs' => $local_path));
+} catch (\Exception $e) {
+    echo "$e\n";
+}
+
+## getObjectUrl(获取文件UrL)
+try {
+    $signedUrl = $cosClient->getObjectUrl($bucket, $key, '+10 minutes');
+    echo $signedUrl;
+} catch (\Exception $e) {
+    print_r($e);
+}
 ```
-
-#### 参数说明
-
-$args是包含以下字段的关联数组：
-
-| 字段名   |       类型     | 默认值 | 是否必填字段 |                  描述                  |
-| :------: | :------------: | :--:   | :--------:   | :----------------------------------: |
-| Bucket   |     string     |  无    | 是           |               bucket名称               |
-| Delimiter      |     string     |  无    | 否          |         分隔符         |
-| Marker      |     string     |  无    | 否          |         标记        |
-| MaxKeys      |     int     |  无    | 否          |         最大对象个数         |
-| Prefix      |     string     |  无    | 否           |         前缀         |
-
-#### 成功返回值
-
-|      返回值类型               |        返回值描述        |
-| :-------------:               | :-----------------: |
-| Guzzle\Service\Resource\Model | 对象列表的结果信息 |
-
-#### 示例
-
-```php
-// 获取bucket下成员
-$result = $cosClient->listObjects(array('Bucket' => 'testbucket'));
-```
-
-### 获得object下载url
-
-获得object带签名的下载url
-
-#### 示例
-
-```php
-//获得object的下载url
-$bucket =  'testbucket';
-$key = 'hello.txt';
-$region = 'cn-south';
-$url = "/{$key}";
-$request = $cosClient->get($url);
-$signedUrl = $cosClient->getObjectUrl($bucket, $key, '+10 minutes');
-```
-### 使用临时密钥
-
-```php
-$cosClient = new Qcloud\Cos\Client(
-    array(
-        'region' => 'cn-south',
-        'timeout' => ,
-        'credentials'=> array(
-            'appId' => '',
-            'secretId'    => '',
-            'secretKey' => '',
-            'token' => '')));
 

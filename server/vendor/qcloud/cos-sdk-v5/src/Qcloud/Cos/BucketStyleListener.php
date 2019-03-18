@@ -8,12 +8,32 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Change from path style to host style, currently only host style is supported in cos.
  */
+function endWith($haystack, $needle) {
+    $length = strlen($needle);
+    if($length == 0)
+    {
+        return true;
+    }
+    return (substr($haystack, -$length) === $needle);
+}
 class BucketStyleListener implements EventSubscriberInterface {
 
     private $appId;  // string: application id.
+    private $ip;
+    private $port;
+    private $ipport;
 
-    public function __construct($appId) {
+    public function __construct($appId, $ip=null, $port=null) {
         $this->appId = $appId;
+        $this->ip = $ip;
+        $this->port = $port;
+        $this->ipport = null;
+        if ($ip != null) {
+            $this->ipport = $ip;
+            if ($port != null) {
+                $this->ipport = $ip.":".$port;
+            }
+        }
     }
 
     public static function getSubscribedEvents() {
@@ -25,12 +45,19 @@ class BucketStyleListener implements EventSubscriberInterface {
      * @param Event $event Event emitted.
      */
     public function onCommandAfterPrepare(Event $event) {
+
         $command = $event['command'];
         $bucket = $command['Bucket'];
         $request = $command->getRequest();
         if ($command->getName() == 'ListBuckets')
         {
-            $request->setHost('service.cos.myqcloud.com');
+            if ($this->ipport != null) {
+                $request->setHost($this->ipport);
+                $request->setHeader('Host', 'service.cos.myqcloud.com');
+            } else {
+
+                $request->setHost('service.cos.myqcloud.com');
+            }
             return ;
         }
         if ($key = $command['Key']) {
@@ -39,14 +66,23 @@ class BucketStyleListener implements EventSubscriberInterface {
                 $command['Key'] = $key = implode('/', $key);
             }
         }
-
-        // Set the key and bucket on the request
-        $request->getParams()->set('bucket', $bucket)->set('key', $key);
-
-        // Switch to virtual hosted bucket
-        $request->setHost($bucket . '-' . $this->appId . '.' . $request->getHost());
+        $request->setHeader('Date', gmdate('D, d M Y H:i:s T'));
         $request->setPath(preg_replace("#^/{$bucket}#", '', $request->getPath()));
 
+        if ($this->appId != null && endWith($bucket,'-'.$this->appId) == False)
+        {
+            $bucket = $bucket.'-'.$this->appId;
+        }
+//        $request->setPath(urldecode($request->getPath()));
+        $request->getParams()->set('bucket', $bucket)->set('key', $key);
+
+        $realHost = $bucket. '.' . $request->getHost();
+        if($this->ipport != null) {
+            $request->setHost($this->ipport);
+            $request->setHeader('Host', $realHost);
+        } else {
+            $request->setHost($realHost);
+        }
         if (!$bucket) {
             $request->getParams()->set('cos.resource', '/');
         } else {

@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+$config['doubanApikey'] = '0df993c66c0c636e29ecbb5344252a4a';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -213,7 +215,7 @@ $config['directory_trigger'] = 'd';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = array(1, 2);
+$config['log_threshold'] = array(1, 2, 3);
 
 /*
 |--------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 <template>
     <div>
         <Card :key="book.id" v-for="book in books" :book="book"></Card>
-    </div>    
+    </div>
 </template>
 
 <script>

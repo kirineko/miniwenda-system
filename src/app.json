@@ -2,7 +2,7 @@
   "pages": [
       "pages/book/main",
       "pages/me/main",
-      "pages/comments/main"    
+      "pages/comments/main"
     ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,7 +1,7 @@
 {
   "pages": [
-      "pages/me/main",
       "pages/book/main",
+      "pages/me/main",
       "pages/comments/main"    
     ],
   "window": {

@@ -6,7 +6,6 @@
         </div>
 
         <YearProgress></YearProgress>
-
         <button v-if="userinfo.openId" @click="scanBook" class="btn">添加图书</button>
     </div>
 </template>

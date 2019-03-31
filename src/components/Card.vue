@@ -1,35 +1,37 @@
 <template>
-  <div class="book-card">
-    <div class="thumb">
-      <img :src="book.image"  class="img" mode="aspectFit">
+  <a :href="detailUrl">
+    <div class="book-card">
+      <div class="thumb" @click.stop="preview">
+        <img :src="book.image"  class="img" mode="aspectFit">
+      </div>
+      <div class="detail">
+        <div class="row text-primary">
+          <div class="right">
+            {{book.rate}} <Rate :value="book.rate"></Rate>
+          </div>
+          <div class="left">
+            {{book.title}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="right text-primary">
+            浏览量:{{book.count}}
+          </div>
+          <div class="left">
+            {{book.author}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="right">
+            {{book.user_info.nickName}}
+          </div>
+          <div class="left">
+            {{book.publisher}}
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="detail">
-      <div class="row text-primary">
-        <div class="right">
-          {{book.rate}} <Rate :value="book.rate"></Rate>
-        </div>
-        <div class="left">
-          {{book.title}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="right">
-          浏览量
-        </div>
-        <div class="left">
-          {{book.author}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="right">
-          {{book.user_info.nickName}}
-        </div>
-        <div class="left">
-          {{book.publisher}}
-        </div>
-      </div>
-    </div>
-  </div>
+  </a>
 </template>
 
 <script>
@@ -38,6 +40,19 @@ import Rate from '@/components/Rate'
 export default {
   components: {
     Rate
+  },
+  methods: {
+    preview () {
+      wx.previewImage({
+        current: this.book.image,
+        urls: [this.book.image]
+      })
+    }
+  },
+  computed: {
+    detailUrl () {
+      return '/pages/detail/main?id=' + this.book.id
+    }
   },
   props: ['book']
 }

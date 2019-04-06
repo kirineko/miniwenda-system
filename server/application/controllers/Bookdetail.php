@@ -11,6 +11,8 @@ class Bookdetail extends CI_Controller {
         $this->load->database();
         $result = $this->db->query("select books.*, cSessionInfo.user_info from `books`, `cSessionInfo` where books.openid = cSessionInfo.open_id and id = $id");
         $book = $result->result_array()[0];
+        $book['tags'] = explode(',', $book['tags']);
+        $book['summary'] = explode("\n", $book['summary']);
         $userinfo = json_decode($book['user_info'], true);
         $book['user_info'] = [
             'name' => $userinfo['nickName'],

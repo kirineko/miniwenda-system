@@ -14,7 +14,7 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#EA5149",
     "navigationBarTitleText": "蜗牛图书",
-    "navigationBarTextStyle": "light"
+    "navigationBarTextStyle": "white"
   },
   "tabBar": {
     "selectedColor": "#EA5149",

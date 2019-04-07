@@ -10,7 +10,8 @@ create table books (
     price varchar(100),
     rate float,
     tags varchar(100),
-    author varchar(100)
+    author varchar(100),
+    count int default 0
 );
 
 create table comments (

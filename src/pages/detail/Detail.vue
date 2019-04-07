@@ -1,7 +1,8 @@
 <template>
   <div>
     <BookInfo :info="info"></BookInfo>
-    <div class="comment">
+    <CommentList :comments="comments"></CommentList>
+    <div class="comment" v-if="showAdd">
       <textarea v-model="comment"
         class="textarea"
         :maxlength="100"
@@ -22,12 +23,17 @@
         评论
       </button>
     </div>
+    <div v-else class="text-footer">
+      未登录或已经评论过啦
+    </div>
+    <button open-type="share" class="btn">转发给好友</button>
   </div>
 </template>
 
 <script>
 import {get, post, showModal} from '@/util'
 import BookInfo from '@/components/BookInfo'
+import CommentList from '@/components/CommentList'
 
 export default {
   data () {
@@ -43,7 +49,20 @@ export default {
   },
 
   components: {
-    BookInfo
+    BookInfo,
+    CommentList
+  },
+
+  computed: {
+    showAdd () {
+      if (!this.userinfo.openId) {
+        return false
+      }
+      if (this.comments.filter(v => v.openid === this.userinfo.openId).length) {
+        return false
+      }
+      return true
+    }
   },
 
   methods: {
@@ -61,6 +80,7 @@ export default {
       try {
         await post('/weapp/addcomment', data)
         this.comment = ''
+        this.getComments()
       } catch (e) {
         showModal('失败', e.msg)
       }
@@ -127,6 +147,7 @@ export default {
     if (userinfo) {
       this.userinfo = userinfo
     }
+    wx.showShareMenu()
   }
 }
 </script>

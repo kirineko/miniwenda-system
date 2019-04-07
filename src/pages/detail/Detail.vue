@@ -84,7 +84,6 @@ export default {
       } catch (e) {
         showModal('失败', e.msg)
       }
-      console.log(data)
     },
 
     async getComments () {
@@ -98,7 +97,6 @@ export default {
         title: info.title
       })
       this.info = info
-      console.log(info)
     },
 
     getPhone (e) {

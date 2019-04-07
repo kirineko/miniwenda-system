@@ -6,8 +6,15 @@ use \QCloud_WeApp_SDK\Mysql\Mysql as DB;
 class Commentlist extends CI_Controller {
     public function index() {
         $bookid = $this->input->get('bookid');
+        $openid = $this->input->get('openid');
         $this->load->database();
-        $result = $this->db->query("select comments.*, cSessionInfo.user_info from `comments`, `cSessionInfo` where comments.openid = cSessionInfo.open_id and comments.bookid = $bookid");
+        $query_cond = "select comments.*, cSessionInfo.user_info from `comments`, `cSessionInfo` where comments.openid = cSessionInfo.open_id and ";
+        if ($bookid) {
+            $query_cond .= "comments.bookid = $bookid";
+        } else if ($openid) {
+            $query_cond .= "comments.openid = '$openid'";
+        }
+        $result = $this->db->query($query_cond);
         $comments = $result->result_array();
         $comments = array_map(function($comment){
             $userinfo = json_decode($comment['user_info'], true);

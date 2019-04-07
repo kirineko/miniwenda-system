@@ -7,6 +7,7 @@
 
         <YearProgress></YearProgress>
         <button v-if="userinfo.openId" @click="scanBook" class="btn">添加图书</button>
+        <button v-if="!userinfo.openId" open-type="getUserInfo" class="btn">授权登录</button>
     </div>
 </template>
 
